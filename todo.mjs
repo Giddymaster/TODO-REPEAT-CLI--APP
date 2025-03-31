@@ -5,39 +5,41 @@ import { nanoid } from "nanoid";
 const program = new Command();
 const client = new PrismaClient();
 
-program.name("Todo-CLI-App")
+program
+  .name("Todo-CLI-App")
   .version("1.0.0")
   .description("Building Todo App using Terminal");
 
-program.command("add-task")
+program
+  .command("add-task")
   .description("Add a new task")
   .requiredOption("-t, --task <value>", "Add task title")
   .requiredOption("-d, --description <value>", "Task Description")
-  .option("-m, --mark", "Mark as Done", false) 
+  .option("-m, --mark", "Mark as Done", false)
   .action(async (options) => {
     const title = options.task;
     const description = options.description;
     const mark = options.mark;
 
     try {
-        const newTask = await client.Todo.create({
-            data: {
-                id: nanoid(5),
-                title,
-                description,
-                complete: mark
-            }
-        });
-        console.log("Task added successfully:", newTask);
+      const newTask = await client.Todo.create({
+        data: {
+          id: nanoid(5),
+          title,
+          description,
+          complete: mark,
+        },
+      });
+      console.log("Task added successfully:", newTask);
     } catch (e) {
-        console.error("Error adding new task!");
+      console.error("Error adding new task!");
     } finally {
-        await client.$disconnect();
+      await client.$disconnect();
     }
   });
 
-
-  program.command("list-tasks")
+program
+  .command("list-tasks")
   .description("List tasks (all by title, done, or not done)")
   .option("-s, --status <value>", "Filter tasks by status (done/not-done)")
   .action(async (options) => {
@@ -56,8 +58,10 @@ program.command("add-task")
         console.log("No tasks found.");
       } else {
         console.log("\n📝 Task List:");
-        tasks.forEach(task => {
-          console.log(`- ${task.title} [${task.complete ? "✅ Done" : "❌ Not Done"}]`);
+        tasks.forEach((task) => {
+          console.log(
+            `- ${task.title} [${task.complete ? "✅ Done" : "❌ Not Done"}]`,
+          );
         });
       }
     } catch (e) {
@@ -67,8 +71,8 @@ program.command("add-task")
     }
   });
 
-
-  program.command("update-task")
+program
+  .command("update-task")
   .description("Update an existing task")
   .requiredOption("-t, --task <value>", "Task title to update")
   .option("-d, --description <value>", "New description")
@@ -104,8 +108,8 @@ program.command("add-task")
     }
   });
 
-
-  program.command("delete-task")
+program
+  .command("delete-task")
   .description("Delete a task")
   .requiredOption("-t, --task <value>", "Task title to delete")
   .action(async (options) => {
@@ -121,7 +125,6 @@ program.command("add-task")
         return;
       }
 
-
       await client.Todo.delete({
         where: { title },
       });
@@ -133,10 +136,5 @@ program.command("add-task")
       await client.$disconnect();
     }
   });
-
-
-
-
-
 
 program.parse();
