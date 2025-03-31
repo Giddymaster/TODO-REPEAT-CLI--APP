@@ -11,6 +11,11 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "commander": "^13.1.0"
+    "@prisma/client": "^6.5.0",
+    "commander": "^13.1.0",
+    "nanoid": "^5.1.5"
+  },
+  "devDependencies": {
+    "prisma": "^6.5.0"
   }
 }
